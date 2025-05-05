@@ -21,7 +21,7 @@ Thanks to the large weight scale using four load cells connected through an HX71
 
 ## 📋 Menu Overview
 
-Shown in `assets/menu.png`. After startup, user is presented with:  
+Shown in `assets/menu.png`. After startup and connecting via UART at baud 38400, user is presented with:  
 ![Menu](assets/menu.png)
 
 ---

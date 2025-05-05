@@ -16,7 +16,17 @@ Thanks to the large weight scale using four load cells connected through an HX71
 - 📊 **Data Reporting**: Raw and calibrated values displayed in terminal
 - 📡 **Wireless Communication** using custom NWK protocol stack
 - 🌐 **Gateway Communication**: Sends sensor packets to central LWM coordinator
-
+- 🤓 **Noise Reduction**: The system uses a moving average over multiple readings to smooth out fluctuations, providing a more stable and accurate weight measurement:
+   ```c
+   float get_average_weight(uint8_t samples, long tare_weight, float scale_factor) {
+       float sum = 0;
+       for (uint8_t i = 0; i < samples; i++) {
+           long tmp_value = Hx711_read();
+           float weight = get_weight_in_grams(tmp_value, tare_weight, scale_factor);
+           sum += weight;
+       }
+       return sum / samples;
+   }
 ---
 
 ## 📋 Menu Overview

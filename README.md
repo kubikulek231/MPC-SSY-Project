@@ -1,4 +1,5 @@
 # ⚖️ MPC-SSY-Project - LWM Weight Measurement System
+**Jakub Lepik | 239122**
 
 This project was done during the MPC-SSY course at FEEC BUT.  
 The weight measuring system reads values from an HX711 ADC board and sends data to an LWM gateway over a wireless network. The system is controlled and calibrated via a serial terminal (e.g., PuTTY).  

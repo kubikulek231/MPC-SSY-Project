@@ -475,6 +475,18 @@ void print_weight(float weight_grams) {
 *****************************************************************************/
 // PREPARING THE DATAFRAME TO SEND
 //
+
+float get_average_weight(uint8_t samples, long tare_weight, float scale_factor) {
+	float sum = 0;
+	for (uint8_t i = 0; i < samples; i++) {
+		long tmp_value = Hx711_read();
+		float weight = get_weight_in_grams(tmp_value, tare_weight, scale_factor);
+		sum += weight;
+	}
+	return sum / samples;
+}
+
+
 static void appSendData(void)
 {
 #ifdef NWK_ENABLE_ROUTING
@@ -482,8 +494,7 @@ static void appSendData(void)
 #else
   appMsg.parentShortAddr = 0;
 #endif
-  tmp_value = Hx711_read();
-  float weight_grams = get_weight_in_grams(tmp_value, tare_weight, scale_factor);
+  float weight_grams = get_average_weight(10, tare_weight, scale_factor);
   appMsg.sensors.battery     = rand() & 0xffff;
   appMsg.sensors.temperature = 99;
   appMsg.sensors.moist       = 69;//ADC_get(3);
@@ -760,8 +771,8 @@ void printMenu() {
 	UART_SendStringNewLine("Welcome to interactive terminal!");
 	UART_SendStringNewLine("1 ...... read weight ADC values");
 	UART_SendStringNewLine("2 ...... calibrate weight reading");
-	UART_SendStringNewLine("3 ...... read calibrated values");
-	UART_SendStringNewLine("4 ...... read calibrated values and send them to gateway");
+	UART_SendStringNewLine("3 ...... read calibrated values in g");
+	UART_SendStringNewLine("4 ...... read calibrated values in g and send them to gateway");
 	UART_SendStringNewLine("0 ...... clear");
 }
 
@@ -871,9 +882,8 @@ int main(void) {
 				UART_SendStringNewLine("CALIBRATION PROCESS FINISHED!!!");
 				break;
 			case '3':
-				UART_SendStringNewLine("Reading weight in g:");
-				tmp_value = Hx711_read();
-				float weight_grams = get_weight_in_grams(tmp_value, tare_weight, scale_factor);
+				UART_SendStringNewLine("Reading weight in g over 10 samples:");
+				float weight_grams = get_average_weight(10, tare_weight, scale_factor);
 				print_weight(weight_grams);
 				break;
 			case '4':
